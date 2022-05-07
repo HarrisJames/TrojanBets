@@ -24,20 +24,6 @@
 
     <body>
    
-    
-    <!-- OLD NAV BAR DON"T DELETE YET -->
-    <!--  
-    <div class = "NavBar">
-			<a class = "loginbutton" href="loginPage.jsp" >Login/Register</a>
-			<a class = "homebutton" href="homePage.jsp" >Home</a>
-			<img src="TommyTrojanHead.png" alt="Tommy Trojan Head" class="trojanBetsLogo">
-			<a class = "trojanBetsButton" href="homePage.jsp" >TrojanBets</a>
-	</div>
-	
-    
-    <img src="TrojanBetsBanner.JPG" alt="Classic Greek Pattern" class="banner">
-	<hr>
-		-->
 		
 		<div class="container-fluid px-0">
     <header>
@@ -48,8 +34,6 @@
                 <ul class="navbar-nav mr-auto">
                 
                     <li class="nav-item"> <a class="nav-link" href="homePage.jsp">Home <span class="sr-only">(current)</span></a> </li>
-                    <li class="nav-item"> <a class="nav-link" href="chat.jsp">Chat</a> </li>
-                    <li class="nav-item"> <a class="nav-link" href="Profile.jsp"> Profile</a> </li>
                     <li class="nav-item active"> <a class="nav-link" href="loginPage.jsp">Login/Register</a> </li>
                  </ul>
             </div>

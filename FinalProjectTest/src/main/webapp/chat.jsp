@@ -2,8 +2,35 @@
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
+<%@ page import="java.net.URLDecoder"%>
+<%@ page import="javax.servlet.ServletException"%>
+<%
+		// getting the user id using cookies and also the name 
+    	String username = null;
+		Cookie cookie = null;
+        Cookie[] cookies = null;
+
+         // Get an array of Cookies associated with the this domain
+        cookies = request.getCookies();
+        if( cookies != null ) {
+           for (int i = 0; i < cookies.length; i++) {
+              cookie = cookies[i];
+              username = URLDecoder.decode(cookie.getValue(), "UTF-8");
+              if(cookie.getName().equals("name")){
+            	  break;
+              }
+           }
+        }
+        boolean loggedIn = false;
+		if(username != null){
+			if(cookie.getName().equals("name")){
+	              loggedIn = true;
+   			}
+		}
+%>
 <head>
 <script type="text/javascript" src="Chat.js"></script>
+<script>setInterval(reloadChat,3000)</script>
 <meta charset="utf-8">
       	
         <title>Chat</title>
@@ -32,7 +59,7 @@
                     <li class="nav-item"> <a class="nav-link" href="homePage.jsp">Home <span class="sr-only">(current)</span></a> </li>
                     <li class="nav-item active"> <a class="nav-link" href="chat.jsp">Chat</a> </li>
                     <li class="nav-item"> <a class="nav-link" href="Profile.jsp"> Profile</a> </li>
-                    <li class="nav-item"> <a class="nav-link" href="loginPage.jsp">Login/Register</a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="LogoutDispatcher">Logout</a> </li>
                  </ul> 
             </div>
         </nav> <!-- ./ end of navbar -->
@@ -44,6 +71,7 @@
 <div class="container bootstrap snippets bootdey">
     <div class="row">
         <div class="col"></div>
+        <input style="display:none" type="text" id="user" value="<%=username%>">
         <!--=========================================================-->
         <!-- selected chat -->
     	<div class="col-md-12 bg-white ">

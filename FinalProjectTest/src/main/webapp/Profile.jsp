@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ page import="java.net.URLDecoder" %>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,6 +20,30 @@
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 		<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 </head>
+<%	
+
+	       			Cookie cookie = null;
+			        Cookie[] cookies = null;
+			
+			         // Get an array of Cookies associated with the this domain
+			        cookies = request.getCookies();
+					String name = null;
+			        if( cookies != null ) {
+			           for (int i = 0; i < cookies.length; i++) {
+			              cookie = cookies[i];
+			              name = URLDecoder.decode(cookie.getValue(), "UTF-8");
+			              if(cookie.getName().equals("name")){
+			              break;
+			              }
+			           }
+			        }
+			        boolean loggedIn = false;
+					if(name != null){
+						if(cookie.getName().equals("name")){
+				              loggedIn = true;
+		       			}
+					}
+%>
 <body style= "background-color: grey">
 
 	<div class="container-fluid px-0">
@@ -31,7 +57,7 @@
                   <li class="nav-item"> <a class="nav-link" href="homePage.jsp">Home <span class="sr-only">(current)</span></a> </li>
                   <li class="nav-item"> <a class="nav-link" href="chat.jsp">Chat</a> </li>
                   <li class="nav-item active"> <a class="nav-link" href="Profile.jsp"> Profile</a> </li>
-                  <li class="nav-item"> <a class="nav-link" href="loginPage.jsp">Login/Register</a> </li>
+                  <li class="nav-item"> <a class="nav-link" href="LogoutDispatcher">Logout</a> </li>
                 </ul>
             </div>
            

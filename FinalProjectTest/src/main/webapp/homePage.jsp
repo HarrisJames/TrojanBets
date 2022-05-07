@@ -62,10 +62,14 @@
                 <ul class="navbar-nav mr-auto">
                 
                     <li class="nav-item active"> <a class="nav-link" href="homePage.jsp">Home <span class="sr-only">(current)</span></a> </li>
-                    <li class="nav-item"> <a class="nav-link" href="chat.jsp"><%if(loggedIn) out.print("Chat"); %></a> </li>
-                    <li class="nav-item"> <a class="nav-link" href="Profile.jsp"><%if(loggedIn) out.print("Profile"); %></a> </li>
-                    <li class="nav-item" style="float: right"> <a class="nav-link" href="LogoutDispatcher"><%if(loggedIn) out.print("Logout"); %></a> </li>
-                    <li class="nav-item" style="float: right"> <a class="nav-link" href="loginPage.jsp"><%if(!loggedIn) out.print("Login/Register"); %></a> </li>
+                    <%if(loggedIn){%>
+                    <li class="nav-item"> <a class="nav-link" href="chat.jsp"><%out.print("Chat"); %></a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="Profile.jsp"><%out.print("Profile"); %></a> </li>
+                    <li class="nav-item" style="float: right"> <a class="nav-link" href="LogoutDispatcher"><%out.print("Logout"); %></a> </li>
+                    <% } %>
+                    <%if(!loggedIn){%>
+                    <li class="nav-item" style="float: right"> <a class="nav-link" href="loginPage.jsp"><%out.print("Login/Register"); %></a> </li>
+                    <% } %>
                  </ul>
                    
             </div>
@@ -78,13 +82,11 @@
 	 <!--  <a href="postbet.jsp" class="btn btn-primary btn-lg btn-block" role="button" aria-pressed="true" data-toggle="modal" data-target="#exampleModalCenter">POST BET</a> -->
 	<!-- Button trigger modal -->
 
-<c:choose>
-	<c:when test="${loggedIn}">
-		<button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#exampleModalCenter">
+	<%if(loggedIn){ %>
+	<button name = "postButton" type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#exampleModalCenter">
 	  		POST BET
-		</button>
-	</c:when>
-</c:choose>
+	</button>
+	<%} %>
 
 
 <!-- Modal -->
@@ -132,7 +134,6 @@
 	  
 	</c:forEach> 
     
-        
     </body>
 
     </html>
