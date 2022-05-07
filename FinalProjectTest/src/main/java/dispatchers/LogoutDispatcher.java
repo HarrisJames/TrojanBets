@@ -13,6 +13,7 @@ import java.io.Serial;
 /**
  * Servlet implementation class LogoutDispatcher
  */
+@WebServlet("/LogoutDispatcher")
 public class LogoutDispatcher extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;

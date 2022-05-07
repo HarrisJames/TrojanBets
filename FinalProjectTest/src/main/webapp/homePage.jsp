@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> --%>
+<%@ page import="java.net.URLDecoder" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>     
+
 
     <!DOCTYPE html>
     <html>
@@ -23,6 +25,30 @@
         
     </head>
 
+	<%	
+
+	       			Cookie cookie = null;
+			        Cookie[] cookies = null;
+			
+			         // Get an array of Cookies associated with the this domain
+			        cookies = request.getCookies();
+					String name = null;
+			        if( cookies != null ) {
+			           for (int i = 0; i < cookies.length; i++) {
+			              cookie = cookies[i];
+			              name = URLDecoder.decode(cookie.getValue(), "UTF-8");
+			              if(cookie.getName().equals("name")){
+			              break;
+			              }
+			           }
+			        }
+			        boolean loggedIn = false;
+					if(name != null){
+						if(cookie.getName().equals("name")){
+				              loggedIn = true;
+		       			}
+					}
+     %>
     <body>
        
 		
@@ -36,9 +62,10 @@
                 <ul class="navbar-nav mr-auto">
                 
                     <li class="nav-item active"> <a class="nav-link" href="homePage.jsp">Home <span class="sr-only">(current)</span></a> </li>
-                    <li class="nav-item"> <a class="nav-link" href="chat.jsp">Chat</a> </li>
-                    <li class="nav-item"> <a class="nav-link" href="Profile.jsp"> Profile</a> </li>
-                    <li class="nav-item" style="float: right"> <a class="nav-link" href="loginPage.jsp">Login/Register</a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="chat.jsp"><%if(loggedIn) out.print("Chat"); %></a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="Profile.jsp"><%if(loggedIn) out.print("Profile"); %></a> </li>
+                    <li class="nav-item" style="float: right"> <a class="nav-link" href="LogoutDispatcher"><%if(loggedIn) out.print("Logout"); %></a> </li>
+                    <li class="nav-item" style="float: right"> <a class="nav-link" href="loginPage.jsp"><%if(!loggedIn) out.print("Login/Register"); %></a> </li>
                  </ul>
                    
             </div>
@@ -50,9 +77,15 @@
 		
 	 <!--  <a href="postbet.jsp" class="btn btn-primary btn-lg btn-block" role="button" aria-pressed="true" data-toggle="modal" data-target="#exampleModalCenter">POST BET</a> -->
 	<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#exampleModalCenter">
-  POST BET
-</button>
+
+<c:choose>
+	<c:when test="${loggedIn}">
+		<button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#exampleModalCenter">
+	  		POST BET
+		</button>
+	</c:when>
+</c:choose>
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -82,7 +115,7 @@
   </div>
 </div>
     
-    <h1 style="border-bottom:1px solid silver"><% out.print((String) request.getAttribute("searchTitle")); %></h1>
+    <h1 style="border-bottom:1px solid silver">Active Bets</h1>
     <c:forEach items="${data}" var="element">  
 	  	<div class="media" style = "border-bottom:1px solid silver">
 					<div class="media-left">
