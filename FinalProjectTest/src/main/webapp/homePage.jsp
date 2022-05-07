@@ -1,6 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ page import="java.net.URLDecoder" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>     
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.sql.*" %> 
+<%@ page import="dispatchers.Bet"%> 
+<%@ page import="dispatchers.Constant"%> 
+
+
+
+
+ 
+  
 
 
     <!DOCTYPE html>
@@ -116,24 +126,41 @@
     </div>
   </div>
 </div>
+	<!--  -->
+    <%
+    	ArrayList<Bet> data = new ArrayList<Bet>();
+    	String sqlQuery = "SELECT details, wager, Bets.user_id, Users.name FROM Bets INNER JOIN Users ON Bets.user_id = Users.user_id WHERE active = 1 ORDER BY bet_id DESC";
+    	try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
+			PreparedStatement ps = conn.prepareStatement(sqlQuery);
+			ResultSet res = ps.executeQuery();
+			while(res.next()){
+				data.add(new Bet(res.getString("details"), res.getInt("wager"), res.getInt("user_id"), res.getString("name"), true));
+			}
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch(SQLException e) {
+        	e.printStackTrace();
+        }
+    	
+    %>
     
+    <!-- Change layout below -->
     <h1 style="border-bottom:1px solid silver">Active Bets</h1>
-    <c:forEach items="${data}" var="element">  
+    <% for(Bet bet: data){ %>
 	  	<div class="media" style = "border-bottom:1px solid silver">
-					<div class="media-left">
-						<a href="DetailsDispatcher?id=<c:out value="${element.getID()}"/>"> <img style="object-fit:cover; border-radius:25px; width: 200px; height: 200px; margin: 5px 60px 10px 100px;" src = "BettingIcon.PNG" /> </a> </br>
-					</div>
 					<div class="media-body" style="margin-top:10px">
-						<a href="BetDetailsDispatcher?id=<c:out value="${element.getID()}"/>" style="font-size:18px; text-decoration:underline"> <c:out value="${element.getName()}" /> <br> </a>
-						<p> Bettor_Username: ${element.getusername()} </p>
-						<p> Bet Description: ${element.getDescription()} </p>
-						<p> Bet Amount: ${element.getAmount()} </p>
-						<a href="betDetails.jsp" style=" text-decoration:none; color: green"> Accept Bet <br> </a> <!-- is this url "${element.getUrl()}"  -->
+						<a href="BetDetailsDispatcher?id=" style="font-size:18px; text-decoration:underline"> <%out.print(bet.getDetails()); %> <br> </a>
+						<p> Bettor_Username: <%out.print(bet.getUsername());%> </p>
+						<p> Bet Description: <%out.print(bet.getDetails()); %> </p>
+						<p> Bet Amount: <%out.print(bet.getWager()); %> </p>
+						<a href="betDetails.jsp" style=" text-decoration:none; color: green"> Accept Bet <br> </a>
 					</div>
 				</div>
 	  
-	</c:forEach> 
-    
+    <% } %>
     </body>
 
     </html>

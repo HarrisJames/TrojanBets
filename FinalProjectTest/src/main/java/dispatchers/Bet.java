@@ -2,42 +2,54 @@ package dispatchers;
 
 public class Bet {
 	String betDetails;
-	String wager;
+	int wager;
+	int user_id;
+	String username;
 	int counterUser_id;
 	Boolean active;
 	Boolean completed;
 	String won_id;
 	
-	public Bet(String betDetails, String wager, int counterUser_id, Boolean active, Boolean completed){
+	public Bet(String betDetails, int wager, int user_id, String username, Boolean active){
 		this.betDetails = betDetails;
 		this.wager = wager;
-		this.counterUser_id = counterUser_id;
+		this.user_id = user_id;
+		this.username = username;
+		this.counterUser_id = 0;
 		this.active = active;
-		this.completed = completed;
+		this.completed = false;
 		this.won_id = null;
 	}
 	
-	String getBetDetails() {
+	public String getDetails() {
 		return betDetails;
 	}
 	
-	String getWager() {
+	public int getWager() {
 		return wager;
 	}
 	
-	int getCounterUser() {
+	public int getUserID() {
+		return user_id;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public int getCounterUser() {
 		return counterUser_id;
 	}
 	
-	Boolean getActive() {
+	public Boolean getActive() {
 		return active;
 	}
 	
-	Boolean getCompleted() {
+	public Boolean getCompleted() {
 		return completed;
 	}
 	
-	String getWonID() {
+	public String getWonID() {
 		return won_id;
 	}
 }
