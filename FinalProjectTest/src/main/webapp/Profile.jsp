@@ -13,7 +13,7 @@
 <head>
 <meta charset="utf-8">
       	
-        <title>Chat</title>
+        <title>Profile</title>
          <link rel="stylesheet" href="trojanBetsStyleSheet.css">
         <link href=âbootstrap/css/bootstrap.min.cssâ rel=âstylesheetâ type=âtext/cssâ />
 		<script type=âtext/javascriptâ src=âbootstrap/js/bootstrap.min.jsâ></script>
@@ -84,7 +84,7 @@
         <div class="mt-5 text-center">
         <%
     	Users user = null;
-    	String sqlQuery = "SELECT name, email FROM Users";
+    	String sqlQuery = "SELECT name, email, balance FROM Users";
     	try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
@@ -92,8 +92,9 @@
 			ResultSet res = ps.executeQuery();
 			while(res.next()){
 				String betUserName = res.getString("name");
-				if(name == null || !name.equals(betUserName)){
-					user= new Users(res.getString("name"), res.getString("email"));
+				if(name == null || name.equals(betUserName)){
+					user= new Users(betUserName, res.getString("email"), res.getInt("balance"));
+					break;
 				}
 			}
         } catch (ClassNotFoundException e) {
@@ -106,13 +107,13 @@
             <h4 class="mb-0"><%out.print(user.getusername()); %></h4> <span class="text-muted d-block mb-2"><%out.print(user.getemail()); %></span> <a href = "LogoutDispatcher" ><button class="btn btn-primary btn-sm follow">Logout</button> </a>
             <div class="d-flex justify-content-between align-items-center mt-4 px-4">
                 <div class="stats">
-                   <h6 class="mb-0">Active Bets</h6> <span> <a href = "activeBets.jsp"><button type="button" class="btn btn-info"> x# Active Bets</button> </a></span> 
+                   <h6 class="mb-0">Active Bets</h6> <span> <a href = "activeBets.jsp"><button type="button" class="btn btn-info">Active Bets</button> </a></span> 
                 </div>
                 <div class="stats">
-                    <h6 class="mb-0">Bets Won</h6> <span>60</span>
+                    <h6 class="mb-0">Bets Won</h6> <span><%out.print(user.calcTotalBets()); %></span>
                 </div>
                 <div class="stats">
-                    <h6 class="mb-0">Current Balance</h6> <span>$35</span>
+                    <h6 class="mb-0">Current Balance</h6> <span>$<%out.print(user.getBalance()); %></span>
                 </div>
             </div>
         </div>

@@ -127,7 +127,6 @@
     </div>
   </div>
 </div>
-	<!--  -->
     <%
     	ArrayList<Bet> data = new ArrayList<Bet>();
     	String sqlQuery = "SELECT details, wager, Bets.user_id, Users.name FROM Bets INNER JOIN Users ON Bets.user_id = Users.user_id WHERE active = 1 ORDER BY bet_id DESC";

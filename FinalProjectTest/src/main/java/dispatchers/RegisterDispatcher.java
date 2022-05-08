@@ -22,7 +22,7 @@ import java.sql.SQLException;
 public class RegisterDispatcher extends HttpServlet {
     @Serial
     private static final long serialVersionUID = 1L;
-    static final String sqlInsert = "INSERT INTO Users (email, name, password) VALUES (?,?,?)";
+    static final String sqlInsert = "INSERT INTO Users (email, name, password, balance) VALUES (?,?,?,30)";
     static final String sqlCheckEmail = "SELECT COUNT(email) as 'result' FROM Users WHERE email = ?";
 
     /**

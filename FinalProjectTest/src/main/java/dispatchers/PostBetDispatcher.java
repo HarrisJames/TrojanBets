@@ -23,8 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PostBetDispatcher extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     String sqlInsertBet = "INSERT INTO Bets(details, wager, user_id, counterUser_id, active, completed, won_id) VALUES (?,?,?,?,?,?,?)";
-    static final String sqlGetUserID = "SELECT user_id  as 'result' FROM Users WHERE name = ?";
-       
+    static final String sqlGetUserID = "SELECT user_id  as 'result' FROM Users WHERE name = ?";       
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -104,6 +103,7 @@ public class PostBetDispatcher extends HttpServlet {
 				System.out.println(e);
 			}
 			try (Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
+				//add bet to bets
 				PreparedStatement ps = conn.prepareStatement(sqlInsertBet);) {
 				ps.setString(1, betDetails);
 				ps.setString(2, wager);
@@ -112,7 +112,6 @@ public class PostBetDispatcher extends HttpServlet {
 				ps.setBoolean(5, active);
 				ps.setBoolean(6, completed);
 				ps.setString(7, won_id);
-				
 				ps.execute();
 			} catch (SQLException sqle) {
 				System.out.println ("SQLException: " + sqle.getMessage());
