@@ -12,16 +12,6 @@ import java.sql.SQLException;
 
 public class userHelper {
     /**
-     * check if name is valid
-     *
-     * @param name the name user provides
-     * @return valid or not valid
-     */
-    public static boolean validName(String name) {
-        return Constant.namePattern.matcher(name).matches();
-    }
-
-    /**
      * check if email is valid
      *
      * @param email the email user provides
@@ -70,7 +60,7 @@ public class userHelper {
      * @throws ServletException
      * @throws IOException
      */
-    public static boolean checkExisting(String username) {
+    public static boolean checkExistingEmail(String email) {
     	int result = 0;
     	try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -78,8 +68,28 @@ public class userHelper {
 			System.out.println(e);
 		}
 		try (Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
-			PreparedStatement ps = conn.prepareStatement("SELECT COUNT(email) as 'result' FROM Users WHERE name = ?");) {
-			ps.setString(1, username);
+			PreparedStatement ps = conn.prepareStatement("SELECT COUNT(email) as 'result' FROM Users WHERE email = ?");) {
+			ps.setString(1, email);
+			ResultSet res = ps.executeQuery();
+			res.next();
+			result = res.getInt("result");
+		} catch (SQLException sqle) {
+			System.out.println ("SQLException: " + sqle.getMessage());
+		}
+    	
+    	return (result>0);
+    }
+    
+    public static boolean checkExistingName(String name) {
+    	int result = 0;
+    	try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		}catch(Exception e) {
+			System.out.println(e);
+		}
+		try (Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
+			PreparedStatement ps = conn.prepareStatement("SELECT COUNT(name) as 'result' FROM Users WHERE name = ?");) {
+			ps.setString(1, name);
 			ResultSet res = ps.executeQuery();
 			res.next();
 			result = res.getInt("result");

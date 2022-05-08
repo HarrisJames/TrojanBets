@@ -49,7 +49,7 @@ public class LoginDispatcher extends HttpServlet {
 			error += "<p>Email Field Empty</p>";
 		else if (password.contentEquals(""))
 			error += "<p>Password Field Empty</p>";
-		else if (!userHelper.checkExisting(username)) {
+		else if (!userHelper.checkExistingName(username)) {
 			error += "<p>No Account Exists, Please Register</p>";
 		}
 		

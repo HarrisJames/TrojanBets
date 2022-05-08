@@ -1,6 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="java.net.URLDecoder" %>
+<%@ page import="dispatchers.Bet"%> 
+<%@ page import="dispatchers.Constant"%> 
+<%@ page import="dispatchers.Users"%> 
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.sql.*" %> 
+
     
 <!DOCTYPE html>
 <html>
@@ -9,8 +15,8 @@
       	
         <title>Chat</title>
          <link rel="stylesheet" href="trojanBetsStyleSheet.css">
-        <link href=”bootstrap/css/bootstrap.min.css” rel=”stylesheet” type=”text/css” />
-		<script type=”text/javascript” src=”bootstrap/js/bootstrap.min.js”></script>
+        <link href=âbootstrap/css/bootstrap.min.cssâ rel=âstylesheetâ type=âtext/cssâ />
+		<script type=âtext/javascriptâ src=âbootstrap/js/bootstrap.min.jsâ></script>
         
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -76,7 +82,28 @@
             <div class="profile"> <img src="ProfilePic.PNG" class="rounded-circle" width="100"> </div>
         </div>
         <div class="mt-5 text-center">
-            <h4 class="mb-0">USERNAME</h4> <span class="text-muted d-block mb-2">email address</span> <button class="btn btn-primary btn-sm follow">Logout button</button>
+        <%
+    	Users user = null;
+    	String sqlQuery = "SELECT name, email FROM Users";
+    	try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
+			PreparedStatement ps = conn.prepareStatement(sqlQuery);
+			ResultSet res = ps.executeQuery();
+			while(res.next()){
+				String betUserName = res.getString("name");
+				if(name == null || !name.equals(betUserName)){
+					user= new Users(res.getString("name"), res.getString("email"));
+				}
+			}
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch(SQLException e) {
+        	e.printStackTrace();
+        }
+    %>
+            <h4 class="mb-0"><%out.print(user.getusername()); %></h4> <span class="text-muted d-block mb-2"><%out.print(user.getemail()); %></span> <a href = "LogoutDispatcher" ><button class="btn btn-primary btn-sm follow">Logout</button> </a>
             <div class="d-flex justify-content-between align-items-center mt-4 px-4">
                 <div class="stats">
                    <h6 class="mb-0">Active Bets</h6> <span> <a href = "activeBets.jsp"><button type="button" class="btn btn-info"> x# Active Bets</button> </a></span> 

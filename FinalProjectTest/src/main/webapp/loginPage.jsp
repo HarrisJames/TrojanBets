@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
-<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> --%>
 
     <!DOCTYPE html>
     <html>
@@ -43,6 +42,13 @@
     <hr>
 	</div>
 		
+	<header>
+		<div style="background-color:#ff5050; color:white; text-align:center">
+			<% String er = (String) request.getAttribute("error");
+			if (er != null) out.println(er);
+			%>
+		</div>
+	</header>
     <!-- LOGIN AND REGISTER FORMS -->
        	<div class="container-fluid">
 		<div class="container">
@@ -90,7 +96,7 @@
 							</div>
 							<div class="form-check">
 								<label class="form-check-label">
-								  <input type="checkbox" class="form-check-input">
+								  <input type="checkbox" class="form-check-input" name= "terms">
 								  <p></p><br>
 								  Read our <a href="#" data-toggle="modal" data-target="#t_and_c_m">Terms and Conditions</a> before registering
 								</label>

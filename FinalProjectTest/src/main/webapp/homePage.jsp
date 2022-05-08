@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
-<%@ page import="java.net.URLDecoder" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>   
+<%@ page import="java.net.URLDecoder" %> 
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.sql.*" %> 
 <%@ page import="dispatchers.Bet"%> 
@@ -89,6 +88,8 @@
     <hr>
 	</div>
 		
+		
+	
 	 <!--  <a href="postbet.jsp" class="btn btn-primary btn-lg btn-block" role="button" aria-pressed="true" data-toggle="modal" data-target="#exampleModalCenter">POST BET</a> -->
 	<!-- Button trigger modal -->
 
@@ -136,7 +137,10 @@
 			PreparedStatement ps = conn.prepareStatement(sqlQuery);
 			ResultSet res = ps.executeQuery();
 			while(res.next()){
-				data.add(new Bet(res.getString("details"), res.getInt("wager"), res.getInt("user_id"), res.getString("name"), true));
+				String betUserName = res.getString("name");
+				if(name == null || !name.equals(betUserName)){
+					data.add(new Bet(res.getString("details"), res.getInt("wager"), res.getInt("user_id"), betUserName, true));
+				}
 			}
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -144,21 +148,55 @@
         catch(SQLException e) {
         	e.printStackTrace();
         }
-    	
     %>
     
     <!-- Change layout below -->
     <h1 style="border-bottom:1px solid silver">Active Bets</h1>
+    <% if(data.isEmpty()){%>
+    	<p> No Active Bets! Check back Later!</p>
+    <% } %>
     <% for(Bet bet: data){ %>
 	  	<div class="media" style = "border-bottom:1px solid silver">
 					<div class="media-body" style="margin-top:10px">
-						<a href="BetDetailsDispatcher?id=" style="font-size:18px; text-decoration:underline"> <%out.print(bet.getDetails()); %> <br> </a>
+					<div class="row">
+					<div class ="col-md-1"><img src="BettingIcon.PNG" alt="Classic Greek Pattern" ></div>
+					<div class ="col-md-8">
+						<p style = "color: red; font-size: 30px"> Bet Information <p>
 						<p> Bettor_Username: <%out.print(bet.getUsername());%> </p>
 						<p> Bet Description: <%out.print(bet.getDetails()); %> </p>
 						<p> Bet Amount: <%out.print(bet.getWager()); %> </p>
-						<a href="betDetails.jsp" style=" text-decoration:none; color: green"> Accept Bet <br> </a>
+						<%if(loggedIn){%>
+						<button name = "AcceptBetButton" type="button" class="btn btn-success" data-toggle="modal" data-target="#AcceptBetModal">
+	  					Accept BET
+						</button>
+						
+						<% } %>
+						</div>
+					</div>
 					</div>
 				</div>
+				
+				<!-- Modal for Accepting Bet -->
+<div class="modal fade" id="AcceptBetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+    <form name ="PostBetForm" action="postBetDispatcher" method="POST">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Do you want to accept this bet?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Return to Home Page</button>
+        <input type="submit" class="btn btn-outline-success" value = "Accept Bet">
+      </div>
+      </form> <!-- End of form -->
+      
+    </div>
+  </div>
+</div>
+	<!--  -->
 	  
     <% } %>
     </body>

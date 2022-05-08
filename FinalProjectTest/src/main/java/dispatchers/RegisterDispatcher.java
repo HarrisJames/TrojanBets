@@ -31,27 +31,6 @@ public class RegisterDispatcher extends HttpServlet {
     public RegisterDispatcher() {
     }
     
-    
-    private static boolean checkExisting(String email) {
-    	int result = 0;
-    	try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		}catch(Exception e) {
-			System.out.println(e);
-		}
-		try (Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
-			PreparedStatement ps = conn.prepareStatement(sqlCheckEmail);) {
-			ps.setString(1, email);
-			ResultSet res = ps.executeQuery();
-			res.next();
-			result = res.getInt("result");
-		} catch (SQLException sqle) {
-			System.out.println ("SQLException: " + sqle.getMessage());
-		}
-    	
-    	return (result>0);
-    }
-
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      * response)
@@ -67,31 +46,28 @@ public class RegisterDispatcher extends HttpServlet {
 		String name = request.getParameter("regName");
 		String password = request.getParameter("regPassword");
 		String confirmPass = request.getParameter("confirmPass");
-		//String terms = request.getParameter("terms");
+		String terms = request.getParameter("terms");
 		
 		
 		//validate info
 		if (email.contentEquals(""))
 			error += "<p>Email Field Empty</p>";
-		else if (!Constant.patternMatches(email, Constant.emailPattern)) {
+		else if (!userHelper.isValidEmail(email)) 
 			error += "<p>Invalid Email Entered</p>";
-		}
-		else if (checkExisting(email)) {
+		else if (userHelper.checkExistingEmail(email))
 			error += "<p>Account Exists for this Email, Please Sign In</p>";
-		}
 		if (name.contentEquals(""))
 			error += "<p>Name Field Empty</p>";
-		else if (!Constant.patternMatches(name, Constant.namePattern)) {
-			error += "<p>Invalid Name Entered</p>";
-		}
+		if (userHelper.checkExistingName(name))
+			error += "<p>Username already taken</p>";
 		if (password.contentEquals(""))
 			error += "<p>Password Field Empty</p>";
 		if (confirmPass.contentEquals(""))
 			error += "<p>Confirm Password Field Empty</p>";
 		if (!confirmPass.equals(password))
 			error += "<p>Passwords did not Match</p>";
-		//if (terms == null)
-			//error += "<p>Must Agree to the Terms and Conditions</p>";
+		if (terms == null)
+			error += "<p>Must Agree to the Terms and Conditions</p>";
 		
 	
 		if (error.equals("")) {
