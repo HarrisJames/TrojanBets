@@ -2,7 +2,10 @@
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
+<%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.sql.Connection" %>
 <%@ page import="java.net.URLDecoder"%>
+<%@ page import="java.sql.*" %>
 <%@ page import="javax.servlet.ServletException"%>
 <%
 		// getting the user id using cookies and also the name 
@@ -78,15 +81,30 @@
             <div class="chat-message">
             <div class="ps-container ps-theme-default ps-active-y" id="chat-content" style="overflow-y: scroll !important; height:500px !important;">
                 <ul id = 'chatroom' class="chat">
-                </ul>
+			       <%
+			           Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/CSCI_Project","root", "root");
+			           Statement statement = connection.createStatement();
+			           ResultSet rs = statement.executeQuery("SELECT * from Chat") ;
+			           
+						while(rs.next()) {
+							String usern = rs.getString(1);
+							String msg = rs.getString(2);
+							String date = rs.getString(3);
+							out.print("<p>"+usern+"-<g>"+msg+"</g><br><small>"+date+"</small></p>");
+						}
+			       %>
+			    </ul>
             </div>
             </div>
             <div class="chat-box bg-white">
             	<div id = 'i' class="input-group">
-            		<input id = 'message' class="form-control border no-shadow no-rounded" placeholder="Type your message here">
+            	<form role="form" method="POST" action="ChatDispatcher">
+            		<input type="text" name="msg" id = "msg" class="form-control border no-shadow no-rounded" placeholder="Type your message here">
+            		<input style="display:none" type="text" id="user" value="<%=username%>">
             		<span class="input-group-btn">
-            			<input type="button" class="btn btn-success no-rounded" value = "Send" onclick="addText()" />
+            		<input type="submit" class="btn btn-lg btn-primary" value="Send" onclick="addText()">
             		</span>
+            	</form>
             	</div><!-- /input-group -->	
             </div>            
 		</div>

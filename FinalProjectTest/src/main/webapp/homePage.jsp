@@ -129,7 +129,7 @@
 </div>
     <%
     	ArrayList<Bet> data = new ArrayList<Bet>();
-    	String sqlQuery = "SELECT details, wager, Bets.user_id, Users.name FROM Bets INNER JOIN Users ON Bets.user_id = Users.user_id WHERE active = 1 ORDER BY bet_id DESC";
+    	String sqlQuery = "SELECT details, wager, Bets.user_id, Users.name, bet_id FROM Bets INNER JOIN Users ON Bets.user_id = Users.user_id WHERE counterUser_id = 0 ORDER BY bet_id DESC";
     	try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
@@ -138,7 +138,7 @@
 			while(res.next()){
 				String betUserName = res.getString("name");
 				if(name == null || !name.equals(betUserName)){
-					data.add(new Bet(res.getString("details"), res.getInt("wager"), res.getInt("user_id"), betUserName, true));
+					data.add(new Bet(res.getInt("bet_id"), res.getString("details"), res.getInt("wager"), res.getInt("user_id"), betUserName, true));
 				}
 			}
         } catch (ClassNotFoundException e) {
@@ -150,9 +150,9 @@
     %>
     
     <!-- Change layout below -->
-    <h1 style="border-bottom:1px solid silver">Active Bets</h1>
+    <h1 style="border-bottom:1px solid silver">Available Bets</h1>
     <% if(data.isEmpty()){%>
-    	<p> No Active Bets! Check back Later!</p>
+    	<p> No Available Bets! Check back Later!</p>
     <% } %>
     <% for(Bet bet: data){ %>
 	  	<div class="media" style = "border-bottom:1px solid silver">
@@ -161,40 +161,23 @@
 					<div class ="col-md-1"><img src="BettingIcon.PNG" alt="Classic Greek Pattern" ></div>
 					<div class ="col-md-8">
 						<p style = "color: red; font-size: 30px"> Bet Information <p>
-						<p> Bettor_Username: <%out.print(bet.getUsername());%> </p>
+						<p> Posted By: <%out.print(bet.getUsername());%> </p>
 						<p> Bet Description: <%out.print(bet.getDetails()); %> </p>
 						<p> Bet Amount: <%out.print(bet.getWager()); %> </p>
 						<%if(loggedIn){%>
-						<button name = "AcceptBetButton" type="button" class="btn btn-success" data-toggle="modal" data-target="#AcceptBetModal">
-	  					Accept BET
-						</button>
+						
+						<form action = "AcceptBetDispatcher" method = "GET">
+							<input type= "hidden" name = "BetID" value = "<%out.print(bet.getBetID());%>">
+							<button type="submit" class="btn btn-success" data-toggle="modal" data-target="#AcceptBetModal">
+		  						Accept BET
+							</button>
+						</form>
 						
 						<% } %>
 						</div>
 					</div>
 					</div>
 				</div>
-				
-				<!-- Modal for Accepting Bet -->
-<div class="modal fade" id="AcceptBetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-    <form name ="PostBetForm" action="postBetDispatcher" method="POST">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Do you want to accept this bet?</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Return to Home Page</button>
-        <input type="submit" class="btn btn-outline-success" value = "Accept Bet">
-      </div>
-      </form> <!-- End of form -->
-      
-    </div>
-  </div>
-</div>
 	<!--  -->
 	  
     <% } %>

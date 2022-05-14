@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class AcceptBetDispatcher extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	// i dont know if the sqlSetCounterID statement is correct... or if im setting the string right later
-	String sqlSetCounterID = "UPDATE Bets SET counterUser_id = ? WHERE bet_id = ?";
+	String sqlSetCounterID = "UPDATE Bets SET counterUser_id = ?, active = ? WHERE bet_id = ?";
     static final String sqlGetUserID = "SELECT user_id  as 'result' FROM Users WHERE name = ?";
        
     /**
@@ -54,7 +54,6 @@ public class AcceptBetDispatcher extends HttpServlet {
               cookie = cookies[i];
               name = URLDecoder.decode(cookie.getValue(), "UTF-8");
               if(cookie.getName().equals("name")){
-            	  System.out.println("Cookie:" + name);
             	  break;
               }
            }
@@ -77,10 +76,10 @@ public class AcceptBetDispatcher extends HttpServlet {
 		}
 		
 		//Get information about which bet "accept bet is being clicked on" aka find betID
-		int betID = 0;
-		//write code to figure out what the betID is
-		//NEEDS TO BE DONE
+		Integer betID = Integer.parseInt(request.getParameter("BetID"));
 		
+		
+		// set active boolean to true
 		
 		//code to set the update statement and execute the sql update statement
 		try {
@@ -91,13 +90,14 @@ public class AcceptBetDispatcher extends HttpServlet {
 		try (Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
 			PreparedStatement ps = conn.prepareStatement(sqlSetCounterID);) {
 			ps.setInt(1, userID);
-			ps.setInt(2, betID);
+			ps.setBoolean(2, true);
+			ps.setInt(3, betID);
 			ps.execute();
 		} catch (SQLException sqle) {
 			System.out.println ("SQLException: " + sqle.getMessage());
 		}
 		
-		
+		response.sendRedirect("Profile.jsp");
 		
 	}
 

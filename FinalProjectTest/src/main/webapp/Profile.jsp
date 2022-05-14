@@ -6,7 +6,6 @@
 <%@ page import="dispatchers.Users"%> 
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.sql.*" %> 
-
     
 <!DOCTYPE html>
 <html>
@@ -84,19 +83,15 @@
         <div class="mt-5 text-center">
         <%
     	Users user = null;
-    	String sqlQuery = "SELECT name, email, balance FROM Users";
+    	String sqlQuery = "SELECT name, email, balance FROM Users WHERE name = ?";
     	try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = DriverManager.getConnection(Constant.url,Constant.DBUserName, Constant.DBPassword);
 			PreparedStatement ps = conn.prepareStatement(sqlQuery);
+			ps.setString(1, name);
 			ResultSet res = ps.executeQuery();
-			while(res.next()){
-				String betUserName = res.getString("name");
-				if(name == null || name.equals(betUserName)){
-					user= new Users(betUserName, res.getString("email"), res.getInt("balance"));
-					break;
-				}
-			}
+			res.next();
+			user = new Users(res.getString("name"), res.getString("email"), res.getInt("balance"));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -104,7 +99,7 @@
         	e.printStackTrace();
         }
     %>
-            <h4 class="mb-0"><%out.print(user.getusername()); %></h4> <span class="text-muted d-block mb-2"><%out.print(user.getemail()); %></span> <a href = "LogoutDispatcher" ><button class="btn btn-primary btn-sm follow">Logout</button> </a>
+            <h4 class="mb-0"><%out.print(name); %></h4> <span class="text-muted d-block mb-2"><%out.print(user.getemail()); %></span> <a href = "LogoutDispatcher" ><button class="btn btn-primary btn-sm follow">Logout</button> </a>
             <div class="d-flex justify-content-between align-items-center mt-4 px-4">
                 <div class="stats">
                    <h6 class="mb-0">Active Bets</h6> <span> <a href = "activeBets.jsp"><button type="button" class="btn btn-info">Active Bets</button> </a></span> 

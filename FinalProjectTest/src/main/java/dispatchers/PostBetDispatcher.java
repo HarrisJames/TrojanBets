@@ -53,7 +53,7 @@ public class PostBetDispatcher extends HttpServlet {
               cookie = cookies[i];
               name = URLDecoder.decode(cookie.getValue(), "UTF-8");
               if(cookie.getName().equals("name")){
-            	  System.out.println("Cookie:" + name);
+            	  
             	  break;
               }
            }

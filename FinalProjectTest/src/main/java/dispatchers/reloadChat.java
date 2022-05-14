@@ -18,8 +18,16 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+@WebServlet("/reloadChat")
+
 public class reloadChat extends HttpServlet {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 		
@@ -31,13 +39,13 @@ public class reloadChat extends HttpServlet {
 			ResultSet rs = ps2.executeQuery();
 			
 			while(rs.next()) {
-				String username = rs.getString(2);
-				String msg = rs.getString(3);
-				String date = rs.getString(4);
+				String username = rs.getString(1);
+				String msg = rs.getString(2);
+				String date = rs.getString(3);
 				PrintWriter out = response.getWriter();
 				out.print("<p>"+username+"-<g>"+msg+"</g><br><small>"+date+"</small></p>");
 			}
-			
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

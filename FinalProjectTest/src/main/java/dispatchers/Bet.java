@@ -1,6 +1,7 @@
 package dispatchers;
 
 public class Bet {
+	int betID;
 	String betDetails;
 	int wager;
 	int user_id;
@@ -10,7 +11,8 @@ public class Bet {
 	Boolean completed;
 	String won_id;
 	
-	public Bet(String betDetails, int wager, int user_id, String username, Boolean active){
+	public Bet(int betID, String betDetails, int wager, int user_id, String username, Boolean active){
+		this.betID = betID;
 		this.betDetails = betDetails;
 		this.wager = wager;
 		this.user_id = user_id;
@@ -19,6 +21,10 @@ public class Bet {
 		this.active = active;
 		this.completed = false;
 		this.won_id = null;
+	}
+	
+	public int getBetID() {
+		return betID;
 	}
 	
 	public String getDetails() {

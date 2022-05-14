@@ -7,18 +7,23 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serial;
-import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+@WebServlet("/ChatDispatcher")
+
 public class ChatDispatcher extends HttpServlet {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	String sqlInsert = "INSERT INTO Chat (username, Message, created_at) VALUES (?,?,?)";
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -26,7 +31,28 @@ public class ChatDispatcher extends HttpServlet {
 		
     	response.setContentType("text/html");
     	
-    	String username = request.getParameter("username");
+    	String username = null;
+		Cookie cookie = null;
+        Cookie[] cookies = null;
+
+         // Get an array of Cookies associated with the this domain
+        cookies = request.getCookies();
+        if( cookies != null ) {
+           for (int i = 0; i < cookies.length; i++) {
+              cookie = cookies[i];
+              username = URLDecoder.decode(cookie.getValue(), "UTF-8");
+              if(cookie.getName().equals("name")){
+            	  break;
+              }
+           }
+        }
+        boolean loggedIn = false;
+		if(username != null){
+			if(cookie.getName().equals("name")){
+	              loggedIn = true;
+   			}
+		}
+    	
     	String msg = request.getParameter("msg");
     	SimpleDateFormat date = new SimpleDateFormat("dd-MMM-yyy");
     	Date d = new Date();
@@ -37,11 +63,12 @@ public class ChatDispatcher extends HttpServlet {
 				ps.setString(1, username);
 				ps.setString(2, msg);
 				ps.setString(3, created);
-				ps.execute();
+				ps.executeUpdate();
 				conn.close();
 			} catch (SQLException sqle) {
 				System.out.println ("SQLException: " + sqle.getMessage());
 			}
+		response.sendRedirect("chat.jsp");
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
